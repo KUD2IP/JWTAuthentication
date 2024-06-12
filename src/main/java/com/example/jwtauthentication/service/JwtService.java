@@ -58,15 +58,22 @@ public class JwtService {
                 && isValidToken;
     }
 
+    /**
+     * Проверяет, является ли токен обновления JWT действительным для указанного пользователя.
+     *
+     * @param token Токен обновления для проверки
+     * @param user Данные пользователя для сравнения
+     * @return true, если токен обновления действителен для пользователя, в противном случае false
+     */
     public boolean isValidRefresh(String token, User user) {
         // Извлекаем имя пользователя из токена
         String username = extractUsername(token);
 
-        // Проверяем, есть ли в базе данных токен с указанным значением
+        // Проверяем, есть ли в базе данных токен обновления с указанным значением
         boolean isValidRefreshToken = tokenRepository.findByRefreshToken(token)
                 .map(t -> !t.isLoggedOut()).orElse(false);
 
-        // Проверяем, не истек ли токен и совпадает ли имя пользователя
+        // Проверяем, не истек ли токен обновления и совпадает ли имя пользователя
         return username.equals(user.getUsername())
                 && isAccessTokenExpired(token)
                 && isValidRefreshToken;

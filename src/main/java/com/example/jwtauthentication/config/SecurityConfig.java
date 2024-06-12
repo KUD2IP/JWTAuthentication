@@ -46,31 +46,33 @@ public class SecurityConfig {
 
     /**
      * Этот метод создает и настраивает цепочку фильтров безопасности для HTTP.
+     *
      * @param http объект HttpSecurity для настройки цепочки фильтров безопасности
      * @return созданная цепочка фильтров безопасности
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // Отключаем защиту от CSRF
-        http.csrf(AbstractHttpConfigurer::disable);
+        http.csrf(AbstractHttpConfigurer::disable); // Отключаем защиту от CSRF
 
         // Настраиваем авторизацию запросов
-        http.authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/login/**","/registration/**", "/css/**", "/refresh_token/**")
-                                .permitAll() // Разрешаем все запросы к этим URL
-                                .anyRequest()
-                                .authenticated()// Требуем аутентификацию для всех остальных запросов
-                ).userDetailsService(userService)
-                .exceptionHandling(e -> e.accessDeniedHandler(accessDeniedHandler)
-                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(STATELESS))
-                .addFilterBefore(jwtFIlter, UsernamePasswordAuthenticationFilter.class)
-                .logout(log -> log.logoutUrl("/logout")
-                        .addLogoutHandler(customLogoutHandler)
-                        .logoutSuccessHandler(
-                                (request, response, authentication) ->
-                                        SecurityContextHolder.clearContext()));
+        http.authorizeHttpRequests(auth -> {
+                    auth.requestMatchers("/login/**","/registration/**", "/css/**", "/refresh_token/**")
+                            .permitAll(); // Разрешаем все запросы к этим URL
+                    auth.anyRequest().authenticated(); // Требуем аутентификацию для всех остальных запросов
+                }).userDetailsService(userService)
+                .exceptionHandling(e -> {
+                    e.accessDeniedHandler(accessDeniedHandler); // Обработчик отказа доступа
+                    e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)); // Входная точка аутентификации
+                })
+                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS)) // Управление сессиями
+                .addFilterBefore(jwtFIlter, UsernamePasswordAuthenticationFilter.class) // Добавление фильтра JWT перед фильтром UsernamePasswordAuthenticationFilter
+                .logout(log -> {
+                    log.logoutUrl("/logout"); // URL для выхода
+                    log.addLogoutHandler(customLogoutHandler); // Добавление пользовательского обработчика выхода
+                    log.logoutSuccessHandler((request, response, authentication) ->
+                            SecurityContextHolder.clearContext()); // Очистка контекста безопасности после успешного выхода
+                });
 
         return http.build();
     }
