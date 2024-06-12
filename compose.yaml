@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  pg_db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=rent_db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    volumes:
+      - db:/var/lib/postgresql/data postgres
+    ports:
+      - "5435:5432"
+
+volumes:
+  db:
