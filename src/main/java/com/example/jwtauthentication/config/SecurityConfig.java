@@ -57,7 +57,7 @@ public class SecurityConfig {
 
         // Настраиваем авторизацию запросов
         http.authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/login/**","/registration/**", "/css/**", "/refresh_token/**")
+                    auth.requestMatchers("/login/**","/registration/**", "/css/**", "/refresh_token/**", "/")
                             .permitAll(); // Разрешаем все запросы к этим URL
                     auth.anyRequest().authenticated(); // Требуем аутентификацию для всех остальных запросов
                 }).userDetailsService(userService)

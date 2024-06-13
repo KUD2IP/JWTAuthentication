@@ -38,4 +38,22 @@ public class UserServiceImpl implements UserService {
                 // Если пользователь не найден, выбрасываем исключение
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь с именем " + username + " не найден"));
     }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user != null) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user != null) {
+            return true;
+        }
+        return false;
+    }
 }

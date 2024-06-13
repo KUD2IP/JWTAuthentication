@@ -1,6 +1,8 @@
 package com.example.jwtauthentication.service;
 
 
+import com.example.jwtauthentication.dto.LoginDto;
+import com.example.jwtauthentication.dto.RegistrationDto;
 import com.example.jwtauthentication.entity.AuthenticationResponse;
 import com.example.jwtauthentication.entity.Role;
 import com.example.jwtauthentication.entity.Token;
@@ -41,6 +43,7 @@ public class AuthenticationService {
 
     private final TokenRepository tokenRepository;
 
+
     public AuthenticationService(UserRepository userRepository, RoleRepository roleRepository,
                                  JwtService jwtService,
                                  PasswordEncoder passwordEncoder,
@@ -58,9 +61,9 @@ public class AuthenticationService {
      * Регистрация нового пользователя.
      *
      * @param request запрос на регистрацию
-     * @return ответ с токеном авторизации
+     *
      */
-    public AuthenticationResponse register(User request) {
+    public void register(RegistrationDto request) {
         // Создание нового пользователя
         User user = new User();
 
@@ -74,15 +77,6 @@ public class AuthenticationService {
         // Сохранение пользователя в базе данных
         user = userRepository.save(user); // сохраняем пользователя в базе данных
 
-        // Генерация токена авторизации
-        String accessToken = jwtService.generateAccessToken(user); // генерируем токен авторизации
-        String refreshToken = jwtService.generateRefreshToken(user); // генерируем токен обновления
-
-
-        saveUserToken(accessToken, refreshToken, user); // сохраняем токен авторизации пользователя в базе данных
-
-        // Возвращение ответа с токеном авторизации
-        return new AuthenticationResponse(accessToken, refreshToken); // возвращаем ответ с токеном авторизации
     }
 
 
@@ -92,7 +86,7 @@ public class AuthenticationService {
      * @param request объект с данными пользователя для авторизации
      * @return объект с токеном авторизации
      */
-    public AuthenticationResponse authenticate(User request) {
+    public AuthenticationResponse authenticate(LoginDto request) {
         // Авторизация пользователя
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
