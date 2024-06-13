@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
@@ -31,16 +32,18 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @Enumerated(value = EnumType.STRING)
-    @Column(name = "role")
-    Role role;
+    @OneToOne
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Role role;
 
     @OneToMany(mappedBy = "user")
     private List<Token> tokens;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return List.of(new SimpleGrantedAuthority(role.getName()));
     }
 
     @Override
