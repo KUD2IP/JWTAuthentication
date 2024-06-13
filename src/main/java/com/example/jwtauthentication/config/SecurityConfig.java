@@ -59,6 +59,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/login/**","/registration/**", "/css/**", "/refresh_token/**", "/")
                             .permitAll(); // Разрешаем все запросы к этим URL
+            auth.requestMatchers("/admin/**").hasRole("ADMIN"); // Разрешаем запросы только для администратора
                     auth.anyRequest().authenticated(); // Требуем аутентификацию для всех остальных запросов
                 }).userDetailsService(userService)
                 .exceptionHandling(e -> {

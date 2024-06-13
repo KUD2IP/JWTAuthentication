@@ -7,7 +7,6 @@ import com.example.jwtauthentication.entity.AuthenticationResponse;
 import com.example.jwtauthentication.entity.Role;
 import com.example.jwtauthentication.entity.Token;
 import com.example.jwtauthentication.entity.User;
-import com.example.jwtauthentication.repository.RoleRepository;
 import com.example.jwtauthentication.repository.TokenRepository;
 import com.example.jwtauthentication.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +20,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -33,8 +31,6 @@ public class AuthenticationService {
 
     private final UserRepository userRepository;
 
-    private final RoleRepository roleRepository;
-
     private final JwtService jwtService;
 
     private final PasswordEncoder passwordEncoder;
@@ -44,13 +40,12 @@ public class AuthenticationService {
     private final TokenRepository tokenRepository;
 
 
-    public AuthenticationService(UserRepository userRepository, RoleRepository roleRepository,
+    public AuthenticationService(UserRepository userRepository,
                                  JwtService jwtService,
                                  PasswordEncoder passwordEncoder,
                                  AuthenticationManager authenticationManager,
                                  TokenRepository tokenRepository) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
         this.jwtService = jwtService;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
@@ -71,8 +66,7 @@ public class AuthenticationService {
         user.setUsername(request.getUsername()); // устанавливаем имя пользователя
         user.setEmail(request.getEmail()); // устанавливаем электронную почту пользователя
         user.setPassword(passwordEncoder.encode(request.getPassword())); // устанавливаем пароль пользователя
-        Role role= roleRepository.findByName("USER");
-        user.setRole(role); // устанавливаем роль пользователя
+        user.setRole(Role.USER); // устанавливаем роль пользователя
 
         // Сохранение пользователя в базе данных
         user = userRepository.save(user); // сохраняем пользователя в базе данных

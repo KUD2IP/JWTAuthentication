@@ -164,6 +164,7 @@ public class JwtService {
         JwtBuilder builder = Jwts.builder()
                 // Установка субъекта токена (имя пользователя)
                 .subject(user.getUsername())
+
                 // Установка времени выдачи токена (текущая дата)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 // Установка времени истечения срока действия токена (текущая дата + 10 часов)
