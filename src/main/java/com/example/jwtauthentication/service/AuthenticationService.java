@@ -1,9 +1,9 @@
 package com.example.jwtauthentication.service;
 
 
-import com.example.jwtauthentication.dto.LoginDto;
-import com.example.jwtauthentication.dto.RegistrationDto;
-import com.example.jwtauthentication.entity.AuthenticationResponse;
+import com.example.jwtauthentication.dto.LoginRequestDto;
+import com.example.jwtauthentication.dto.RegistrationRequestDto;
+import com.example.jwtauthentication.dto.AuthenticationResponseDto;
 import com.example.jwtauthentication.entity.Role;
 import com.example.jwtauthentication.entity.Token;
 import com.example.jwtauthentication.entity.User;
@@ -58,7 +58,7 @@ public class AuthenticationService {
      * @param request запрос на регистрацию
      *
      */
-    public void register(RegistrationDto request) {
+    public void register(RegistrationRequestDto request) {
         // Создание нового пользователя
         User user = new User();
 
@@ -80,7 +80,7 @@ public class AuthenticationService {
      * @param request объект с данными пользователя для авторизации
      * @return объект с токеном авторизации
      */
-    public AuthenticationResponse authenticate(LoginDto request) {
+    public AuthenticationResponseDto authenticate(LoginRequestDto request) {
         // Авторизация пользователя
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -102,7 +102,7 @@ public class AuthenticationService {
         saveUserToken(accessToken, refreshToken, user);
 
         // Возвращение объекта с токеном авторизации
-        return new AuthenticationResponse(accessToken, refreshToken);
+        return new AuthenticationResponseDto(accessToken, refreshToken);
     }
 
     /**
@@ -159,7 +159,7 @@ public class AuthenticationService {
      * @param response HTTP-ответ.
      * @return Ответ с обновленным токеном.
      */
-    public ResponseEntity<AuthenticationResponse> refreshToken(
+    public ResponseEntity<AuthenticationResponseDto> refreshToken(
             HttpServletRequest request,
             HttpServletResponse response) {
 
@@ -193,7 +193,7 @@ public class AuthenticationService {
             saveUserToken(accessToken, refreshToken, user);
 
             // Возвращаем новый ответ с токенами
-            return new ResponseEntity<>(new AuthenticationResponse(accessToken, refreshToken), HttpStatus.OK);
+            return new ResponseEntity<>(new AuthenticationResponseDto(accessToken, refreshToken), HttpStatus.OK);
         }
 
         // Возвращаем неавторизованный статус

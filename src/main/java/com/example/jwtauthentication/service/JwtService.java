@@ -31,6 +31,7 @@ public class JwtService {
 
     @Value("${security.jwt.refresh_token_expiration}")
     private long refreshTokenExpiration;
+
     private final TokenRepository tokenRepository;
 
     public JwtService(TokenRepository tokenRepository) {
@@ -164,7 +165,6 @@ public class JwtService {
         JwtBuilder builder = Jwts.builder()
                 // Установка субъекта токена (имя пользователя)
                 .subject(user.getUsername())
-
                 // Установка времени выдачи токена (текущая дата)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 // Установка времени истечения срока действия токена (текущая дата + 10 часов)
@@ -191,6 +191,4 @@ public class JwtService {
         // Возвращаем ключ для HmacSHA256
         return Keys.hmacShaKeyFor(keyBytes);
     }
-
-
 }

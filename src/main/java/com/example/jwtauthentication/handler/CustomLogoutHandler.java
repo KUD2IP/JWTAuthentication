@@ -1,4 +1,4 @@
-package com.example.jwtauthentication.config;
+package com.example.jwtauthentication.handler;
 
 import com.example.jwtauthentication.entity.Token;
 import com.example.jwtauthentication.repository.TokenRepository;

@@ -1,4 +1,4 @@
-package com.example.jwtauthentication.config;
+package com.example.jwtauthentication.handler;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

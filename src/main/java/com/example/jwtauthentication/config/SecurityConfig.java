@@ -1,5 +1,7 @@
 package com.example.jwtauthentication.config;
 
+import com.example.jwtauthentication.handler.CustomAccessDeniedHandler;
+import com.example.jwtauthentication.handler.CustomLogoutHandler;
 import com.example.jwtauthentication.filter.JwtFilter;
 import com.example.jwtauthentication.service.UserService;
 import org.springframework.context.annotation.Bean;
@@ -52,14 +54,14 @@ public class SecurityConfig {
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // Отключаем защиту от CSRF
+
         http.csrf(AbstractHttpConfigurer::disable); // Отключаем защиту от CSRF
 
         // Настраиваем авторизацию запросов
         http.authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/login/**","/registration/**", "/css/**", "/refresh_token/**", "/")
                             .permitAll(); // Разрешаем все запросы к этим URL
-            auth.requestMatchers("/admin/**").hasRole("ADMIN"); // Разрешаем запросы только для администратора
+                    auth.requestMatchers("/admin/**").hasAuthority("ADMIN"); // Разрешаем запросы только для администратора
                     auth.anyRequest().authenticated(); // Требуем аутентификацию для всех остальных запросов
                 }).userDetailsService(userService)
                 .exceptionHandling(e -> {
